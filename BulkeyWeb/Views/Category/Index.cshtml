@@ -1,1 +1,25 @@
-﻿<h1>CategoryList</h1>
+﻿@model List<Category>
+
+
+<h1>CategoryList</h1>
+
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>Category Name</th>
+			<th>Display Order</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var category in Model)
+		{
+			<tr>
+				<td>@category.Name</td>
+				<td>@category.DisplayOrder</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary">Edit</a>
+					<a asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
