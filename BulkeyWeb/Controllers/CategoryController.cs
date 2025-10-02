@@ -1,6 +1,7 @@
 ﻿using BulkeyWeb.Data;
 using BulkeyWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BulkeyWeb.Controllers
 {
@@ -24,7 +25,7 @@ namespace BulkeyWeb.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            if(obj.Name.ToString()==obj.DisplayOrder.ToString())
+            if (obj.Name.ToString() == obj.DisplayOrder.ToString())
             {
                 ModelState.AddModelError("Name", "The display order cannot exactly match the name");
             }
@@ -34,9 +35,74 @@ namespace BulkeyWeb.Controllers
             {
                 _db.Categories.Add(obj);
                 _db.SaveChanges();
+                TempData["Success"] = "Category created successfully :-)";
                 return RedirectToAction("Index", "Category");
             }
-            return View("Create",obj);
+            return View("Create", obj);
+        }
+
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? obj = _db.Categories.Find(id);
+            if(obj == null)
+            {
+                return NotFound();
+            }   
+            return View(obj);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Category obj)
+        {
+            if (obj.Name.ToString() == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("Name", "The display order cannot exactly match the name");
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Update(obj);
+                _db.SaveChanges();
+                TempData["Success"] = "Category Updated successfully :-)";
+
+                return RedirectToAction("Index", "Category");
+            }
+            return View("Edit", obj);
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? obj = _db.Categories.Find(id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+
+        [HttpPost , ActionName("Delete")]
+        public IActionResult DeletePost(int? id)
+        {
+                Category objToDelete = _db.Categories.Find(id);
+                if(objToDelete == null)
+                {
+                    return NotFound();
+                }
+                _db.Categories.Remove(objToDelete);
+                _db.SaveChanges();
+                TempData["Success"] = "Category Deleted successfully :-)";
+
+            return RedirectToAction("Index", "Category");            
         }
 
     }
