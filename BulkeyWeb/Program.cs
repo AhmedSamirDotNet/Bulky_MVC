@@ -1,4 +1,6 @@
 using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Repository;
+using Bulky.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace BulkeyWeb
@@ -11,6 +13,7 @@ namespace BulkeyWeb
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<ICategoryRepository,CategoryRepository>(); //When an instance of ICategoryRepository is requested, an instance of CategoryRepository will be provided.
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -38,6 +41,12 @@ namespace BulkeyWeb
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+
+
+            DoubleTheNumber(5);
         }
+        public static Func<int, int> DoubleTheNumber = (x => x * 2);
+
     }
+
 }
