@@ -18,10 +18,7 @@ namespace Bulky.DataAccess.Repository
          //when objects are created and pass it to the base class constructor
             _CategoryRepository = db;
         }
-        public void Save()
-        {
-            _CategoryRepository.SaveChanges();
-        }
+       
 
         public void Update(Category category)
         {
