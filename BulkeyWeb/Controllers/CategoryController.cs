@@ -1,5 +1,5 @@
-﻿using BulkeyWeb.Data;
-using BulkeyWeb.Models;
+﻿using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
