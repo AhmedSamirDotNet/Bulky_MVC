@@ -1,8 +1,6 @@
-﻿using Bulky.DataAccess.Data;
-using Bulky.DataAccess.Models;
+﻿using Bulky.DataAccess.Models;
 using Bulky.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BulkeyWeb.Areas.Admin.Controllers
 {

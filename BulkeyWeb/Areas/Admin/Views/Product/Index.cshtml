@@ -1,0 +1,53 @@
+﻿@model List<Bulky.Models.Models.Product>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-secondary">📦 Product List</h2>
+        <a asp-action="Create" asp-controller="Product" class="btn btn-success shadow-sm px-4">
+            <i class="bi bi-plus-circle"></i> Add Product
+        </a>
+    </div>
+
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>List Price</th>
+                    <th>Price (1-50)</th>
+                    <th>Price (50+)</th>
+                    <th>Price (100+)</th>
+                    <th style="width:180px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@product.Title</td>
+                        <td>@product.Author</td>
+                        <td><span class="badge bg-secondary">@product.ISBN</span></td>
+                        <td><span class="badge bg-dark text-white">$@product.ListPrice</span></td>
+                        <td><span class="badge bg-primary">$@product.Price</span></td>
+                        <td><span class="badge bg-warning text-dark">$@product.Price50</span></td>
+                        <td><span class="badge bg-success">$@product.Price100</span></td>
+                        <td>
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-controller="Product" asp-route-id="@product.Id"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a asp-action="Delete" asp-controller="Product" asp-route-id="@product.Id"
+                                   class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
