@@ -1,4 +1,4 @@
-using Bulky.DataAccess.Data;
+﻿using Bulky.DataAccess.Data;
 using Bulky.DataAccess.Repository;
 using Bulky.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,8 @@ namespace BulkeyWeb
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<ICategoryRepository,CategoryRepository>(); //When an instance of ICategoryRepository is requested, an instance of CategoryRepository will be provided.
+            //builder.Services.AddScoped<ICategoryRepository,CategoryRepository>(); //When an iلاعهnstance of ICategoryRepository is requested, an instance of CategoryRepository will be provided.
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();//When an instance of IUnitOfWork is requested, an instance of UnitOfWork will be provided.
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -38,7 +39,7 @@ namespace BulkeyWeb
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
 
