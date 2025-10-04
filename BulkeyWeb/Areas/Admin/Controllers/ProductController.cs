@@ -1,6 +1,8 @@
 ﻿using Bulky.DataAccess.Repository.IRepository;
+using Bulky.DataAccess.ViewModels;
 using Bulky.Models.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BulkeyWeb.Areas.Customer.Controllers
 {
@@ -16,19 +18,45 @@ namespace BulkeyWeb.Areas.Customer.Controllers
         public IActionResult Index()
         {
             List<Product> objCtegoryList = _UOW.Products.GetAll().ToList();
+            
             return View(objCtegoryList);
         }
 
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
-            return View("Create");
+            
+          //  ViewBag.CategoryList = listItems;
+          ProductVM productVM = new()
+            {
+                Product = new Product(),
+                CategoryListItem = _UOW.Categories.GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                })
+          };
+            if(id==null || id==0)
+            {
+                //create
+                return View("Upsert", productVM);
+            }
+            else
+            {
+                //update
+                productVM.Product = _UOW.Products.Get(c => c.Id == id);
+                if(productVM.Product == null)
+                {
+                    return NotFound();
+                }
+                return View("Upsert", productVM);
+            }
         }
         [HttpPost]
-        public IActionResult Create(Product obj)
+        public IActionResult Create(ProductVM obj)
         {
             if(ModelState.IsValid && obj!=null)
             {
-                _UOW.Products.Add(obj);
+                _UOW.Products.Add(obj.Product);
                 _UOW.Save();
                 TempData["Success"] = "Product created successfully :-)";
                 return RedirectToAction("Index", "Product");
