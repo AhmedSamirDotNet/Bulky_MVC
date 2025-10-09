@@ -21,17 +21,35 @@ namespace Bulky.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> Filter)
+        public T Get(Expression<Func<T, bool>> Filter , string? includeProperties = null)
         {
             IQueryable<T> query = dbSet; //Defines a query related to this table
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp); //Eager loading of related entities
+                }
+            }
+
             query = query.Where(Filter); // Applies the filter to the query it's like a sql where clause because is compiled filter that will execute on the database server side
             return query.FirstOrDefault(); //Executes the query and returns the first result or null
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             //_CategoryRepository.Set<T>().Where(); is it possible to filter here ?
             IQueryable<T> query = dbSet; //Defines a query related to this table
+
+            if(!string.IsNullOrEmpty( includeProperties))
+            {
+                foreach(var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp); //Eager loading of related entities
+                }
+            }   
+
             return query.ToList(); //Executes the query and returns the list of results
         }
 

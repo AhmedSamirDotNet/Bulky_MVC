@@ -19,7 +19,7 @@ namespace BulkeyWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            List<Product> objCtegoryList = _UOW.Products.GetAll().ToList();
+            List<Product> objCtegoryList = _UOW.Products.GetAll(includeProperties: "Category" ).ToList();
             
             return View(objCtegoryList);
         }
@@ -154,17 +154,44 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             }
             return View("Delete", obj);
         }
-        [HttpPost]
-        public IActionResult Delete(Product obj)
+        //[HttpPost]
+        //public IActionResult Delete(Product obj)
+        //{
+        //    if(obj == null || obj.Id == 0)
+        //    {
+        //        return NotFound();
+        //    }
+        //    _UOW.Products.Remove(obj);
+        //    _UOW.Save();
+        //    TempData["Success"] = "Product deleted successfully :-)";
+        //    return RedirectToAction("Index", "Product");
+        //}
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            if(obj == null || obj.Id == 0)
-            {
-                return NotFound();
-            }
-            _UOW.Products.Remove(obj);
-            _UOW.Save();
-            TempData["Success"] = "Product deleted successfully :-)";
-            return RedirectToAction("Index", "Product");
+            var productList = _UOW.Products.GetAll(includeProperties: "Category");
+            return Json(new { data = productList });
         }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var product = _UOW.Products.Get(p => p.Id == id);
+
+            if (product == null)
+                return Json(new {success=false,message = "Error while deleteing" });
+
+            string OldIamgePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('/', '\\'));
+            if (System.IO.File.Exists(OldIamgePath))
+                System.IO.File.Delete(OldIamgePath);
+
+            _UOW.Products.Remove(product);
+            _UOW.Save();
+            return Json(new {success=true , message = "product deleted successfully"});
+        }
+        #endregion
     }
+
 }
