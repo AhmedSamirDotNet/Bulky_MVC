@@ -10,9 +10,11 @@ namespace BulkeyWeb.Areas.Customer.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _UOW;
-        public ProductController(IUnitOfWork unitOf)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ProductController(IUnitOfWork unitOf, IWebHostEnvironment webHostEnvironment)
         {
             _UOW = unitOf;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -52,44 +54,92 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Create(ProductVM obj)
+        public IActionResult Upsert(ProductVM obj ,IFormFile? file)
         {
             if(ModelState.IsValid && obj!=null)
             {
-                _UOW.Products.Add(obj.Product);
-                _UOW.Save();
+                
+                if (file != null)
+                {
+                    string ProductFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "product");
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string filePath = Path.Combine(ProductFolderPath, fileName);
+
+                    
+
+                    //In case of update
+                    if(!string.IsNullOrEmpty( obj.Product.ImageUrl))
+                    {
+                        //Update image   > so delete the old one
+                        //next line doesn't work why??????
+                        string OldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.Product.ImageUrl.TrimStart('/'));// علشان الريلاتق باث متخزن في الاول بسلاش فترم علشان الكومباين بتحط واحده
+                        if(System.IO.File.Exists(OldImagePath))
+                        {
+                            //Be sure It exists then delete it
+                            System.IO.File.Delete(OldImagePath);
+                        }
+
+                    }
+
+                    using (var filestream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(filestream);
+                    }
+                    obj.Product.ImageUrl = @"/images/product/"+fileName;
+                    
+                }
+
+                if (obj.Product.Id ==0)
+                {
+                    _UOW.Products.Add(obj.Product);
+                }
+                else
+                {
+                    _UOW.Products.Update(obj.Product);
+                }
+                    _UOW.Save();
                 TempData["Success"] = "Product created successfully :-)";
                 return RedirectToAction("Index", "Product");
             }
-            return View("Create", obj);
+
+            ProductVM productVM = new()
+            {
+                Product = new Product(),
+                CategoryListItem = _UOW.Categories.GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                })
+            };
+            return View("Upsert", obj);
         }
 
 
-        public IActionResult Edit(int? id)
-        {
-            if(id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Product? obj = _UOW.Products.Get(c => c.Id == id);
-            if (obj == null)
-            {
-                return NotFound();
-            }
-            return View("Edit",obj);
-        }
-        [HttpPost]
-        public IActionResult Edit(Product obj)
-        {
-            if(ModelState.IsValid && obj != null)
-            {
-                _UOW.Products.Update(obj);
-                _UOW.Save();
-                TempData["Success"] = "Product updated successfully :-)";
-                return RedirectToAction("Index", "Product");
-            }
-            return View("Edit", obj);
-        }
+        //public IActionResult Edit(int? id)
+        //{
+        //    if(id == null || id == 0)
+        //    {
+        //        return NotFound();
+        //    }
+        //    Product? obj = _UOW.Products.Get(c => c.Id == id);
+        //    if (obj == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View("Edit",obj);
+        //}
+        //[HttpPost]
+        //public IActionResult Edit(Product obj)
+        //{
+        //    if(ModelState.IsValid && obj != null)
+        //    {
+        //        _UOW.Products.Update(obj);
+        //        _UOW.Save();
+        //        TempData["Success"] = "Product updated successfully :-)";
+        //        return RedirectToAction("Index", "Product");
+        //    }
+        //    return View("Edit", obj);
+        //}
 
         public IActionResult Delete(int? id)
         {
