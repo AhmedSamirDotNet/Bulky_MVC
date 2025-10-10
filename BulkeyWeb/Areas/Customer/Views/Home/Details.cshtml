@@ -1,0 +1,218 @@
+﻿View Details
+@model Bulky.Models.Models.Product
+
+
+<form method="post">
+    <div class="container py-5 mb-4">
+        <div class="card border-0 shadow-sm rounded-3 mt-4">
+            <!-- Card Header -->
+            <div class="card-header bg-primary bg-gradient text-white py-4">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h3 class="text-white fw-bold text-uppercase">@Model.Title</h3>
+                        <p class="text-white-75 fw-semibold mb-0">by @Model.Author</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body p-4">
+                <div class="py-3">
+                    <!-- Back Button -->
+                    <div class="row">
+                        <div class="col-6 col-md-2 offset-lg-1 pb-1">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill mb-4 fw-semibold btn-sm text-uppercase">
+                                <i class="bi bi-arrow-left me-1"></i>Back to Products
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Product Content -->
+                    <div class="row g-4">
+                        <!-- Product Image -->
+                        <div class="col-12 col-lg-3 offset-lg-1 text-center mb-3">
+                            <img src="@Model.ImageUrl" class="img-fluid rounded-3" alt="@Model.Title" style="max-height: 500px; object-fit: cover;" />
+                            @if (Model.ListPrice > Model.Price100)
+                            {
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <span class="badge bg-danger rounded-pill">
+                                        Save @(((Model.ListPrice - Model.Price100) / Model.ListPrice * 100).ToString("0"))% on 100+ units
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                        <!-- Product Details -->
+                        <div class="col-12 col-lg-6 offset-lg-1">
+                            <!-- Category -->
+                            <div class="col-12 col-md-6 pb-3">
+                                <span class="badge bg-primary w-fit-content">@Model.Category.Name</span>
+                            </div>
+                            <!-- ISBN -->
+                            <div class="row ps-2">
+                                <h6 class="text-dark text-opacity-75">
+                                    <i class="bi bi-book me-1"></i>ISBN: @Model.ISBN
+                                </h6>
+                            </div>
+                            <!-- List Price -->
+                            <div class="row ps-2">
+                                <h6 class="text-dark text-opacity-75 pb-2">
+                                    List Price:
+                                    <span class="text-decoration-line-through">
+                                        $@Model.ListPrice.ToString("0.00")
+                                    </span>
+                                </h6>
+                            </div>
+                            <!-- Pricing Table -->
+                            <div class="row text-center ps-2">
+                                <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                                    <div class="text-dark text-opacity-75 fw-semibold">Quantity</div>
+                                </div>
+                                <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                                    <div class="text-dark text-opacity-75 fw-semibold">1-50</div>
+                                </div>
+                                <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                                    <div class="text-dark text-opacity-75 fw-semibold">51-100</div>
+                                </div>
+                                <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                                    <div class="text-dark text-opacity-75 fw-semibold">100+</div>
+                                </div>
+                            </div>
+                            <div class="row text-center ps-2">
+                                <div class="p-1 col-3 col-lg-2 bg-white text-primary fw-bold">
+                                    <div>Price</div>
+                                </div>
+                                <div class="p-1 col-3 col-lg-2 bg-white text-primary fw-bold">
+                                    <div>$@Model.Price.ToString("0.00")</div>
+                                </div>
+                                <div class="p-1 col-3 col-lg-2 bg-white text-primary fw-bold">
+                                    <div>$@Model.Price50.ToString("0.00")</div>
+                                </div>
+                                <div class="p-1 col-3 col-lg-2 bg-white text-primary fw-bold">
+                                    <div>$@Model.Price100.ToString("0.00")</div>
+                                </div>
+                            </div>
+                            <!-- Description -->
+                            <div class="row ps-2 my-3">
+                                <p class="text-secondary lh-sm">
+                                    @if (string.IsNullOrEmpty(Model.Description))
+                                    {
+                                        <span>No description available.</span>
+                                    }
+                                    else
+                                    {
+                                        @Model.Description
+                                    }
+                                </p>
+                            </div>
+                            <!-- Quantity Input -->
+                            <div class="row ps-2 mb-3">
+                                <div class="col-md-4">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-primary text-white border-0 fw-semibold rounded-start-pill" id="inputGroup-sizing-default">
+                                            Count
+                                        </span>
+                                        <input type="number" value="1" min="1" class="form-control text-end rounded-end-pill" aria-label="Quantity" aria-describedby="inputGroup-sizing-default" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Add to Cart Button -->
+                            <div class="row">
+                                <div class="col-12 col-md-6 pb-1">
+                                    <button type="submit" disabled class="btn btn-primary bg-gradient w-100 py-2 rounded-pill text-uppercase fw-semibold">
+                                        Add to Cart (Coming Soon...)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+        }
+
+    .img-fluid {
+        border-radius: 12px;
+        position: relative;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5em 1em;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #00aaff);
+        border: none;
+        transition: background 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #0056b3, #007bff);
+        }
+
+    .btn-outline-secondary {
+        transition: background 0.3s ease;
+        border-color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #e9ecef;
+        }
+
+    .input-group-text {
+        background: linear-gradient(45deg, #007bff, #00aaff);
+    }
+
+    .input-group {
+        transition: box-shadow 0.3s ease;
+    }
+
+        .input-group:focus-within {
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+        }
+
+    .w-fit-content {
+        width: fit-content;
+    }
+
+    .text-white-75 {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    .btn, .input-group-text {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .badge {
+        font-size: 0.8rem;
+    }
+
+    .text-dark.text-opacity-75 {
+        font-size: 0.9rem;
+    }
+
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}

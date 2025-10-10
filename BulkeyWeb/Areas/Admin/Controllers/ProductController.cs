@@ -19,16 +19,16 @@ namespace BulkeyWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            List<Product> objCtegoryList = _UOW.Products.GetAll(includeProperties: "Category" ).ToList();
-            
+            List<Product> objCtegoryList = _UOW.Products.GetAll(includeProperties: "Category").ToList();
+
             return View(objCtegoryList);
         }
 
         public IActionResult Upsert(int? id)
         {
-            
-          //  ViewBag.CategoryList = listItems;
-          ProductVM productVM = new()
+
+            //  ViewBag.CategoryList = listItems;
+            ProductVM productVM = new()
             {
                 Product = new Product(),
                 CategoryListItem = _UOW.Categories.GetAll().Select(c => new SelectListItem
@@ -36,8 +36,8 @@ namespace BulkeyWeb.Areas.Customer.Controllers
                     Text = c.Name,
                     Value = c.Id.ToString()
                 })
-          };
-            if(id==null || id==0)
+            };
+            if (id == null || id == 0)
             {
                 //create
                 return View("Upsert", productVM);
@@ -46,7 +46,7 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             {
                 //update
                 productVM.Product = _UOW.Products.Get(c => c.Id == id);
-                if(productVM.Product == null)
+                if (productVM.Product == null)
                 {
                     return NotFound();
                 }
@@ -54,26 +54,26 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Upsert(ProductVM obj ,IFormFile? file)
+        public IActionResult Upsert(ProductVM obj, IFormFile? file)
         {
-            if(ModelState.IsValid && obj!=null)
+            if (ModelState.IsValid && obj != null)
             {
-                
+
                 if (file != null)
                 {
                     string ProductFolderPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "product");
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string filePath = Path.Combine(ProductFolderPath, fileName);
 
-                    
+
 
                     //In case of update
-                    if(!string.IsNullOrEmpty( obj.Product.ImageUrl))
+                    if (!string.IsNullOrEmpty(obj.Product.ImageUrl))
                     {
                         //Update image   > so delete the old one
                         //next line doesn't work why??????
                         string OldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.Product.ImageUrl.TrimStart('/'));// علشان الريلاتق باث متخزن في الاول بسلاش فترم علشان الكومباين بتحط واحده
-                        if(System.IO.File.Exists(OldImagePath))
+                        if (System.IO.File.Exists(OldImagePath))
                         {
                             //Be sure It exists then delete it
                             System.IO.File.Delete(OldImagePath);
@@ -85,11 +85,11 @@ namespace BulkeyWeb.Areas.Customer.Controllers
                     {
                         file.CopyTo(filestream);
                     }
-                    obj.Product.ImageUrl = @"/images/product/"+fileName;
-                    
+                    obj.Product.ImageUrl = @"/images/product/" + fileName;
+
                 }
 
-                if (obj.Product.Id ==0)
+                if (obj.Product.Id == 0)
                 {
                     _UOW.Products.Add(obj.Product);
                 }
@@ -97,7 +97,7 @@ namespace BulkeyWeb.Areas.Customer.Controllers
                 {
                     _UOW.Products.Update(obj.Product);
                 }
-                    _UOW.Save();
+                _UOW.Save();
                 TempData["Success"] = "Product created successfully :-)";
                 return RedirectToAction("Index", "Product");
             }
@@ -181,7 +181,7 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             var product = _UOW.Products.Get(p => p.Id == id);
 
             if (product == null)
-                return Json(new {success=false,message = "Error while deleteing" });
+                return Json(new { success = false, message = "Error while deleteing" });
 
             string OldIamgePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('/', '\\'));
             if (System.IO.File.Exists(OldIamgePath))
@@ -189,7 +189,7 @@ namespace BulkeyWeb.Areas.Customer.Controllers
 
             _UOW.Products.Remove(product);
             _UOW.Save();
-            return Json(new {success=true , message = "product deleted successfully"});
+            return Json(new { success = true, message = "product deleted successfully" });
         }
         #endregion
     }
