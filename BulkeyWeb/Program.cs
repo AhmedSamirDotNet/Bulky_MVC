@@ -14,6 +14,10 @@ namespace BulkeyWeb
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //Add services for razor pages
+            builder.Services.AddRazorPages();
+
             //builder.Services.AddScoped<ICategoryRepository,CategoryRepository>(); //When an iلاعهnstance of ICategoryRepository is requested, an instance of CategoryRepository will be provided.
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();//When an instance of IUnitOfWork is requested, an instance of UnitOfWork will be provided.
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -40,6 +44,7 @@ namespace BulkeyWeb
 
             app.UseAuthorization();
 
+            app.MapRazorPages();//Map Razor pages
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
