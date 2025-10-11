@@ -31,7 +31,16 @@ namespace BulkeyWeb
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            
+            builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            //Add after AddIdentity method because it is used to configure the application cookie.
+            //Configure routes for login, logout and access denied because we are using areas in our project. So we need to specify the paths for these actions.  
+            builder.Services.ConfigureApplicationCookie(builder =>
+            {
+                builder.LoginPath = $"/Identity/Account/Login";
+                builder.LogoutPath = $"/Identity/Account/Logout";
+                builder.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
 
             var app = builder.Build();
 
