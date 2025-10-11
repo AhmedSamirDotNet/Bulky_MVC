@@ -3,6 +3,9 @@ using Bulky.DataAccess.Repository;
 using Bulky.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Bulky.Utility;
 
 namespace BulkeyWeb
 {
@@ -18,6 +21,9 @@ namespace BulkeyWeb
             //Add services for razor pages
             builder.Services.AddRazorPages();
 
+            //When an instance of IEmailSender is requested, an instance of EmailSender will be provided.
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
+
             //builder.Services.AddScoped<ICategoryRepository,CategoryRepository>(); //When an iلاعهnstance of ICategoryRepository is requested, an instance of CategoryRepository will be provided.
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();//When an instance of IUnitOfWork is requested, an instance of UnitOfWork will be provided.
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -25,7 +31,7 @@ namespace BulkeyWeb
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             var app = builder.Build();
 
