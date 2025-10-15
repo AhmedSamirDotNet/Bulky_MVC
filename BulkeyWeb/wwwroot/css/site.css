@@ -719,3 +719,37 @@ bg-success {
         background-color: #578553;
         border-color: #578553;
     }
+/* Form Grid Layout for Better Spacing */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.form-floating input,
+.form-floating select {
+    height: 52px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: #fff;
+    padding-left: 15px;
+}
+
+    .form-floating input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-floating select option {
+        color: #000;
+    }
+
+.form-floating span.text-danger {
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
