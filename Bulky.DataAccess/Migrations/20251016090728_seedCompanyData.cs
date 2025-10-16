@@ -17,9 +17,9 @@ namespace Bulky.DataAccess.Migrations
                 columns: new[] { "ID", "City", "Name", "PhoneNumber", "PostalCode", "State", "StreetAddress" },
                 values: new object[,]
                 {
-                    { 1, "Cairo", "FutureTech Solutions", "+20 100 555 9876", "11511", "Cairo Governorate", "125 Innovation Drive" },
-                    { 2, "Giza", "Nile Software House", "+20 101 222 4433", "12677", "Giza Governorate", "42 Smart Village Road" },
-                    { 3, "Alexandria", "Delta Digital Agency", "+20 102 777 1234", "21532", "Alexandria Governorate", "8 Freedom Street" }
+                    { 1, "Cairo .", "FutureTech Solutions", "+20 100 555 9876", "11511", "Cairo Governorate", "125 Innovation Drive" },
+                    { 2, "Giza .", "Nile Software House", "+20 101 222 4433", "12677", "Giza Governorate", "42 Smart Village Road" },
+                    { 3, "Alexandria .", "Delta Digital Agency", "+20 102 777 1234", "21532", "Alexandria Governorate", "8 Freedom Street" }
                 });
         }
 

@@ -4,6 +4,7 @@ using Bulky.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bulky.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251016092526_AddCompanyToUser")]
+    partial class AddCompanyToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +101,7 @@ namespace Bulky.DataAccess.Migrations
                         new
                         {
                             ID = 1,
-                            City = "Cairo .",
+                            City = "Cairo",
                             Name = "FutureTech Solutions",
                             PhoneNumber = "+20 100 555 9876",
                             PostalCode = "11511",
@@ -108,7 +111,7 @@ namespace Bulky.DataAccess.Migrations
                         new
                         {
                             ID = 2,
-                            City = "Giza .",
+                            City = "Giza",
                             Name = "Nile Software House",
                             PhoneNumber = "+20 101 222 4433",
                             PostalCode = "12677",
@@ -118,7 +121,7 @@ namespace Bulky.DataAccess.Migrations
                         new
                         {
                             ID = 3,
-                            City = "Alexandria .",
+                            City = "Alexandria",
                             Name = "Delta Digital Agency",
                             PhoneNumber = "+20 102 777 1234",
                             PostalCode = "21532",

@@ -42,6 +42,11 @@
                         </select>
                         <label asp-for="Input.Role">Role</label>
                     </div>
+                    <div class="form-floating mb-2">
+                        <select asp-for="Input.CompanyId" style="display: none;" asp-items="@Model.Input.CompanyList" class="form-select">
+                            <option value="">-- Select Company --</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     
@@ -93,9 +98,6 @@
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
 
 <style>
     /* Unified Auth Pages Style */
@@ -293,3 +295,21 @@
 
     }
 </style>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#Input_Role').change(function () {
+                var selectedRole = $('#Input_Role option:selected').text();
+                if (selectedRole === 'Company') {
+                    $('#Input_CompanyId').show();
+                } else {
+                    $('#Input_CompanyId').hide();
+                }
+            });
+        });
+    </script>
+}
