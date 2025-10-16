@@ -17,6 +17,7 @@ namespace Bulky.DataAccess.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Company> Companies { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,6 +29,38 @@ namespace Bulky.DataAccess.Data
                 new Category { Id = 2, Name = "SciFi", DisplayOrder = 2 },
                 new Category { Id = 3, Name = "History", DisplayOrder = 3 }
             );
+            modelBuilder.Entity<Company>().HasData(
+    new Company
+    {
+        ID=1,
+        Name = "FutureTech Solutions",
+        StreetAddress = "125 Innovation Drive",
+        City = "Cairo",
+        State = "Cairo Governorate",
+        PostalCode = "11511",
+        PhoneNumber = "+20 100 555 9876"
+    },
+    new Company
+    {
+        ID = 2,
+        Name = "Nile Software House",
+        StreetAddress = "42 Smart Village Road",
+        City = "Giza",
+        State = "Giza Governorate",
+        PostalCode = "12677",
+        PhoneNumber = "+20 101 222 4433"
+    },
+    new Company
+    {
+        ID = 3,
+        Name = "Delta Digital Agency",
+        StreetAddress = "8 Freedom Street",
+        City = "Alexandria",
+        State = "Alexandria Governorate",
+        PostalCode = "21532",
+        PhoneNumber = "+20 102 777 1234"
+    }
+);
 
             modelBuilder.Entity<Product>().HasData(
                 new Product

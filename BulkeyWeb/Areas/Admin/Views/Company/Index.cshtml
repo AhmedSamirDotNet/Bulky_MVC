@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Bulky.Models.Models.Company>
+
+@{
+    ViewData["Title"] = "Companies List";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">Companies</h2>
+        <a asp-action="Upsert" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add New Company
+        </a>
+    </div>
+
+    <table id="tblData" class="table table-striped table-bordered text-center align-middle shadow-sm">
+        <thead class="table-primary">
+            <tr>
+                <th>Name</th>
+                <th>Street Address</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Postal Code</th>
+                <th>Phone Number</th>
+                <th width="150px">Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- 🔹 Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="companyName"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="confirmDelete" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        padding-bottom: 100px;
+    }
+</style>
+
+@section Scripts {
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        let dataTable;
+        let deleteId = 0;
+
+        $(document).ready(function () {
+            loadDataTable();
+        });
+
+        function loadDataTable() {
+            dataTable = $('#tblData').DataTable({
+                ajax: {
+                    url: '/Admin/Company/GetAll'
+                },
+                columns: [
+                    { data: 'name' },
+                    { data: 'streetAddress', defaultContent: '—' },
+                    { data: 'city', defaultContent: '—' },
+                    { data: 'state', defaultContent: '—' },
+                    { data: 'postalCode', defaultContent: '—' },
+                    { data: 'phoneNumber', defaultContent: '—' },
+                    {
+                        data: 'id',
+                        render: function (data, type, row) {
+                            return `
+                                <div class="btn-group" role="group">
+                                    <a href="/Admin/Company/Upsert/${data}" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <button class="btn btn-sm btn-danger" onclick="openDeleteModal(${data}, '${row.name.replace(/'/g, "\\'")}')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>`;
+                        }
+                    }
+                ]
+            });
+        }
+
+        function openDeleteModal(id, name) {
+            deleteId = id;
+            $('#companyName').text(name);
+            $('#deleteModal').modal('show');
+        }
+
+        $('#confirmDelete').click(function () {
+            $.ajax({
+                url: '/Admin/Company/Delete/' + deleteId,
+                type: 'DELETE',
+                success: function (response) {
+                    $('#deleteModal').modal('hide');
+                    dataTable.ajax.reload();
+                    Swal.fire('Deleted!', 'Company has been deleted.', 'success');
+                },
+                error: function () {
+                    $('#deleteModal').modal('hide');
+                    Swal.fire('Error', 'Something went wrong while deleting the company!', 'error');
+                }
+            });
+        });
+    </script>
+}

@@ -4,6 +4,7 @@ using Bulky.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bulky.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251016072914_AddCompanyTable")]
+    partial class AddCompanyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,38 +96,6 @@ namespace Bulky.DataAccess.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            City = "Cairo",
-                            Name = "FutureTech Solutions",
-                            PhoneNumber = "+20 100 555 9876",
-                            PostalCode = "11511",
-                            State = "Cairo Governorate",
-                            StreetAddress = "125 Innovation Drive"
-                        },
-                        new
-                        {
-                            ID = 2,
-                            City = "Giza",
-                            Name = "Nile Software House",
-                            PhoneNumber = "+20 101 222 4433",
-                            PostalCode = "12677",
-                            State = "Giza Governorate",
-                            StreetAddress = "42 Smart Village Road"
-                        },
-                        new
-                        {
-                            ID = 3,
-                            City = "Alexandria",
-                            Name = "Delta Digital Agency",
-                            PhoneNumber = "+20 102 777 1234",
-                            PostalCode = "21532",
-                            State = "Alexandria Governorate",
-                            StreetAddress = "8 Freedom Street"
-                        });
                 });
 
             modelBuilder.Entity("Bulky.Models.Models.Product", b =>
