@@ -38,6 +38,7 @@ namespace BulkeyWeb.Areas.Customer.Controllers
 
             ShoppingCart ShoppingCart = new()
             {
+                Id=0,
                 Product = product,
                 ProductId = product.Id,
                 Count = 1
@@ -57,12 +58,26 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             {
                 return NotFound();
             }
-            cart.Id = 0;
+
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             cart.ApplicationUserId = userId.ToString();
-            _unitOfWork.ShoppingCarts.Add(cart);
+
+            ShoppingCart shoppingCartFronDb = _unitOfWork.ShoppingCarts.Get(c => (c.ApplicationUserId == userId)  
+                                                                                && c.ProductId == cart.ProductId);
+
+            if (shoppingCartFronDb != null){
+                //cart exist
+                shoppingCartFronDb.Count += cart.Count;
+                _unitOfWork.ShoppingCarts.Update(shoppingCartFronDb);
+            }
+            else{
+                //Add a cart
+                cart.Id = 0;
+                _unitOfWork.ShoppingCarts.Add(cart);
+            }
             _unitOfWork.Save();
+
 
             return RedirectToAction(nameof(Index));
         }
