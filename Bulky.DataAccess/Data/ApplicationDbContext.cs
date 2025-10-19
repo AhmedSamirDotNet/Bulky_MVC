@@ -25,6 +25,13 @@ namespace Bulky.DataAccess.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<ShoppingCart>()
+                .HasKey(sc => sc.Id);
+
+            modelBuilder.Entity<ShoppingCart>()
+                .Property(sc => sc.Id)
+                .ValueGeneratedOnAdd(); 
+
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Action", DisplayOrder = 1 },
                 new Category { Id = 2, Name = "SciFi", DisplayOrder = 2 },

@@ -1,16 +1,17 @@
 ﻿View Details
-@model Bulky.Models.Models.Product
+@model Bulky.Models.Models.ShoppingCart
 
 
 <form method="post">
+    <input type="hidden" asp-for="ProductId" />
     <div class="container py-5 mb-4">
         <div class="card border-0 shadow-sm rounded-3 mt-4">
             <!-- Card Header -->
             <div class="card-header bg-primary bg-gradient text-white py-4">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <h3 class="text-white fw-bold text-uppercase">@Model.Title</h3>
-                        <p class="text-white-75 fw-semibold mb-0">by @Model.Author</p>
+                        <h3 class="text-white fw-bold text-uppercase">@Model.Product.Title</h3>
+                        <p class="text-white-75 fw-semibold mb-0">by @Model.Product.Author</p>
                     </div>
                 </div>
             </div>
@@ -29,12 +30,12 @@
                     <div class="row g-4">
                         <!-- Product Image -->
                         <div class="col-12 col-lg-3 offset-lg-1 text-center mb-3">
-                            <img src="@Model.ImageUrl" class="img-fluid rounded-3" alt="@Model.Title" style="max-height: 500px; object-fit: cover;" />
-                            @if (Model.ListPrice > Model.Price100)
+                            <img src="@Model.Product.ImageUrl" class="img-fluid rounded-3" alt="@Model.Product.Title" style="max-height: 500px; object-fit: cover;" />
+                            @if (Model.Product.ListPrice > Model.Product.Price100)
                             {
                                 <div class="position-absolute top-0 end-0 m-2">
                                     <span class="badge bg-danger rounded-pill">
-                                        Save @(((Model.ListPrice - Model.Price100) / Model.ListPrice * 100).ToString("0"))% on 100+ units
+                                        Save @(((Model.Product.ListPrice - Model.Product.Price100) / Model.Product.ListPrice * 100).ToString("0"))% on 100+ units
                                     </span>
                                 </div>
                             }
@@ -43,12 +44,12 @@
                         <div class="col-12 col-lg-6 offset-lg-1">
                             <!-- Category -->
                             <div class="col-12 col-md-6 pb-3">
-                                <span class="badge bg-primary w-fit-content">@Model.Category.Name</span>
+                                <span class="badge bg-primary w-fit-content">@Model.Product.Category.Name</span>
                             </div>
                             <!-- ISBN -->
                             <div class="row ps-2">
                                 <h6 class="text-dark text-opacity-75">
-                                    <i class="bi bi-book me-1"></i>ISBN: @Model.ISBN
+                                    <i class="bi bi-book me-1"></i>ISBN: @Model.Product.ISBN
                                 </h6>
                             </div>
                             <!-- List Price -->
@@ -56,7 +57,7 @@
                                 <h6 class="text-dark text-opacity-75 pb-2">
                                     List Price:
                                     <span class="text-decoration-line-through">
-                                        $@Model.ListPrice.ToString("0.00")
+                                        $@Model.Product.ListPrice.ToString("0.00")
                                     </span>
                                 </h6>
                             </div>
@@ -80,25 +81,25 @@
                                     <div>Price</div>
                                 </div>
                                 <div class="p-1 col-3 col-lg-2 bg-white text-primary fw-bold">
-                                    <div>$@Model.Price.ToString("0.00")</div>
+                                    <div>$@Model.Product.Price.ToString("0.00")</div>
                                 </div>
                                 <div class="p-1 col-3 col-lg-2 bg-white text-primary fw-bold">
-                                    <div>$@Model.Price50.ToString("0.00")</div>
+                                    <div>$@Model.Product.Price50.ToString("0.00")</div>
                                 </div>
                                 <div class="p-1 col-3 col-lg-2 bg-white text-primary fw-bold">
-                                    <div>$@Model.Price100.ToString("0.00")</div>
+                                    <div>$@Model.Product.Price100.ToString("0.00")</div>
                                 </div>
                             </div>
                             <!-- Description -->
                             <div class="row ps-2 my-3">
                                 <p class="text-secondary lh-sm">
-                                    @if (string.IsNullOrEmpty(Model.Description))
+                                    @if (string.IsNullOrEmpty(Model.Product.Description))
                                     {
                                         <span>No description available.</span>
                                     }
                                     else
                                     {
-                                        @Model.Description
+                                        @Model.Product.Description
                                     }
                                 </p>
                             </div>
@@ -109,15 +110,12 @@
                                         <span class="input-group-text bg-primary text-white border-0 fw-semibold rounded-start-pill" id="inputGroup-sizing-default">
                                             Count
                                         </span>
-                                        <input type="number" value="1" min="1" class="form-control text-end rounded-end-pill" aria-label="Quantity" aria-describedby="inputGroup-sizing-default" />
+                                        <input asp-for="@Model.Count" type="number" value="1" min="1" max="1000" class="form-control text-end rounded-end-pill" aria-label="Quantity" aria-describedby="inputGroup-sizing-default" />
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Add to Cart Button -->
-                            <div class="row">
                                 <div class="col-12 col-md-6 pb-1">
-                                    <button type="submit" disabled class="btn btn-primary bg-gradient w-100 py-2 rounded-pill text-uppercase fw-semibold">
-                                        Add to Cart (Coming Soon...)
+                                    <button type="submit" class="btn btn-primary ">
+                                        Add to Cart
                                     </button>
                                 </div>
                             </div>

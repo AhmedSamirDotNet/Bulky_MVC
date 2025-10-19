@@ -11,6 +11,8 @@ namespace Bulky.Models.Models
 {
     public class ShoppingCart
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
         public int Id { get; set; }
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
@@ -19,6 +21,7 @@ namespace Bulky.Models.Models
         [Range(1,100,ErrorMessage ="Please enter a value between 1 and 1000")]
         public int Count { get; set; }
         public string ApplicationUserId { get; set; }
+
         [ForeignKey("ApplicationUserId")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
