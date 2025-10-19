@@ -64,7 +64,8 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             cart.ApplicationUserId = userId.ToString();
 
             ShoppingCart shoppingCartFronDb = _unitOfWork.ShoppingCarts.Get(c => (c.ApplicationUserId == userId)  
-                                                                                && c.ProductId == cart.ProductId);
+                                                                                && c.ProductId == cart.ProductId,
+                                                                                tracked: false);
 
             if (shoppingCartFronDb != null){
                 //cart exist
@@ -74,11 +75,12 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             else{
                 //Add a cart
                 cart.Id = 0;
+                cart.Product = null;
                 _unitOfWork.ShoppingCarts.Add(cart);
             }
             _unitOfWork.Save();
 
-
+            TempData["success"]= "Cart updated successfully";
             return RedirectToAction(nameof(Index));
         }
 
