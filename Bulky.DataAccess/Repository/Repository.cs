@@ -43,9 +43,12 @@ namespace Bulky.DataAccess.Repository
             return query.FirstOrDefault(); // Executes the query and returns the first result or null
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T,bool>>? Filter=null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet; // Defines a query related to this table
+
+            if (Filter != null)
+                query = query.Where(Filter); // Applies the filter to the query
 
             if (!string.IsNullOrEmpty(includeProperties)) // Fix: Check for non-null/non-empty
             {
