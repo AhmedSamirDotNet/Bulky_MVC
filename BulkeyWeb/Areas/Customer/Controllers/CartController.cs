@@ -25,15 +25,48 @@ namespace BulkeyWeb.Areas.Customer.Controllers
 
             ShoppingCartVM = new ShoppingCartVM()
             {
-                ShoppingCartList = _Uof.ShoppingCarts.GetAll(cart => cart.ApplicationUserId == userId 
+                ShoppingCartList = _Uof.ShoppingCarts.GetAll(cart => cart.ApplicationUserId == userId
                 , includeProperties: "Product")
-                };
+            };
             foreach (var shoppingCart in ShoppingCartVM.ShoppingCartList)
             {
                 shoppingCart.Price = GetPriceBasedOnQuantity(shoppingCart);
                 ShoppingCartVM.OrderTotal += (shoppingCart.Price * shoppingCart.Count);
             }
-                return View(ShoppingCartVM);
+            return View(ShoppingCartVM);
+        }
+
+        public IActionResult Plus(int CartId)
+        {
+            var CartFromDb = _Uof.ShoppingCarts.Get(cart => cart.Id == CartId);
+            CartFromDb.Count += 1;
+            _Uof.ShoppingCarts.Update(CartFromDb);
+            _Uof.Save();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Minus(int CartId)
+        {
+            var CartFromDb = _Uof.ShoppingCarts.Get(cart => cart.Id == CartId);
+            if (CartFromDb.Count <= 1)
+            {
+                _Uof.ShoppingCarts.Remove(CartFromDb);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                CartFromDb.Count -= 1;
+                _Uof.ShoppingCarts.Update(CartFromDb);
+            }
+            _Uof.Save();
+            return RedirectToAction(nameof(Index));
+        }
+        public IActionResult Remove(int CartId)
+        {
+            var CartFromDb = _Uof.ShoppingCarts.Get(cart => cart.Id == CartId);
+            _Uof.ShoppingCarts.Remove(CartFromDb);
+            _Uof.Save();
+            return RedirectToAction(nameof(Index));
         }
 
         private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
@@ -54,5 +87,8 @@ namespace BulkeyWeb.Areas.Customer.Controllers
 
 
         }
+
+
+
     }
 }
