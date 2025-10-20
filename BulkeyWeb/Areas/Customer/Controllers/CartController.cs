@@ -1,4 +1,5 @@
 ﻿using Bulky.DataAccess.Repository.IRepository;
+using Bulky.Models.Models;
 using Bulky.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +27,32 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             {
                 ShoppingCartList = _Uof.ShoppingCarts.GetAll(cart => cart.ApplicationUserId == userId 
                 , includeProperties: "Product")
+                };
+            foreach (var shoppingCart in ShoppingCartVM.ShoppingCartList)
+            {
+                shoppingCart.Price = GetPriceBasedOnQuantity(shoppingCart);
+                ShoppingCartVM.OrderTotal += (shoppingCart.Price * shoppingCart.Count);
+            }
+                return View(ShoppingCartVM);
+        }
+
+        private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
+        {
+            if (shoppingCart.Count < 50)
+            {
+
+                return shoppingCart.Product.Price;
+            }
+            else if (shoppingCart.Count < 100)
+            {
+                return shoppingCart.Product.Price50;
+            }
+            else
+            {
+                return shoppingCart.Product.Price100;
+            }
 
 
-            };
-            return View(ShoppingCartVM);
         }
     }
 }

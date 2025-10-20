@@ -26,5 +26,10 @@ namespace Bulky.Models.Models
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
 
+
+        //This property will not be mapped to the database table, it is used only for calculations in the application
+        [NotMapped]
+        public double Price { get; set; }
+
     }
 }
