@@ -44,6 +44,10 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             _Uof.Save();
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult Summary()
+        {
+            return View();
+        }
 
         public IActionResult Minus(int CartId)
         {
