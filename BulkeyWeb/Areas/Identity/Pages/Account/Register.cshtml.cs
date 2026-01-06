@@ -221,7 +221,8 @@ namespace BulkeyWeb.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            return Page();
+            LoadLists();
+                return Page();
         }
 
         private ApplicationUser CreateUser()
@@ -246,5 +247,24 @@ namespace BulkeyWeb.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<IdentityUser>)_userStore;
         }
+
+        private void LoadLists()
+        {
+            Input.RoleList = _roleManager.Roles
+                .Select(r => r.Name)
+                .Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                });
+
+            Input.CompanyList = _Uow.Companies.GetAll()
+                .Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.ID.ToString()
+                });
+        }
+
     }
 }
