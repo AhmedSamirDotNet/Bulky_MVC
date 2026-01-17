@@ -1,6 +1,7 @@
 ﻿using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models.Models;
 using Bulky.Models.ViewModel;
+using Bulky.Models;
 using Bulky.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -90,14 +91,14 @@ namespace BulkeyWeb.Areas.Customer.Controllers
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
-            ShoppingCartVM.OrderHeader.ApplicationUser = _Uof.ApplicationUsers.Get(u => u.Id == userId);
+            ApplicationUser applicationUser = _Uof.ApplicationUsers.Get(u => u.Id == userId);
 
             foreach (var shoppingCart in ShoppingCartVM.ShoppingCartList){
                 shoppingCart.Price = GetPriceBasedOnQuantity(shoppingCart);
                 ShoppingCartVM.OrderHeader.OrderTotal += (shoppingCart.Price * shoppingCart.Count);
             }
-            if(ShoppingCartVM.OrderHeader.ApplicationUser.CompanyID.GetValueOrDefault()==0){
-                //It is a regular customer account and we need to capture payment immediately
+            if(applicationUser.CompanyID.GetValueOrDefault()==0){
+                //It is a regular customer account 
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
             }
@@ -108,7 +109,7 @@ namespace BulkeyWeb.Areas.Customer.Controllers
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
             }
 
-            _Uof.OrderHeaders.Add(ShoppingCartVM.OrderHeader);
+            _Uof.OrderHeaders.Add(ShoppingCartVM.OrderHeader); // and here issue i think
             _Uof.Save();
 
             foreach (var shoppingCart in ShoppingCartVM.ShoppingCartList)
@@ -121,10 +122,22 @@ namespace BulkeyWeb.Areas.Customer.Controllers
                     Count = shoppingCart.Count
                 };
                 _Uof.OrderDetails.Add(orderDetail);
-                _Uof.Save();
+                
             }
-            
-            return View(ShoppingCartVM);
+            _Uof.Save();
+            if(applicationUser.CompanyID.GetValueOrDefault()==0){
+                //It is a regular customer account and we need to capture payment immediately
+                //capture payment + stripe logic
+                
+
+            }
+
+            return RedirectToAction(nameof(OrderConfirmation),"Cart", new { id = ShoppingCartVM.OrderHeader.Id });
+        }
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View(id);
         }
 
         public IActionResult Minus(int CartId)
