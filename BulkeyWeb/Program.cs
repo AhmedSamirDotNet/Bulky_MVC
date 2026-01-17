@@ -40,6 +40,7 @@ namespace BulkeyWeb
                 builder.LoginPath = $"/Identity/Account/Login";
                 builder.LogoutPath = $"/Identity/Account/Logout";
                 builder.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+
             });
 
             var app = builder.Build();
